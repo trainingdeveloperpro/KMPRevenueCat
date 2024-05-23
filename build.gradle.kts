@@ -1,5 +1,13 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.dokka.gradle.DokkaTask
+import java.util.Properties
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(localPropertiesFile.reader())
+    }
+}
 
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
@@ -35,18 +43,10 @@ allprojects {
     extensions.configure<PublishingExtension> {
         repositories {
             maven {
-                val isSnapshot = version.toString().endsWith("SNAPSHOT")
-                val repositoryId = System.getenv("SONATYPE_REPOSITORY_ID") ?: ""
-                url = uri(
-                    when{
-                        isSnapshot.not() && repositoryId.isNotEmpty() -> "https://s01.oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
-                        isSnapshot.not() -> "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
-                        else -> "https://s01.oss.sonatype.org/content/repositories/snapshots"
-                    }
-                )
+                url = uri("https://maven.pkg.github.com/trainingdeveloperpro/KMPRevenueCat")
                 credentials {
-                    username = sonatypeUsername
-                    password = sonatypePassword
+                    username = localProperties.getProperty("GITHUB_USERNAME")
+                    password = localProperties.getProperty("GITHUB_TOKEN")
                 }
             }
         }
@@ -61,7 +61,7 @@ allprojects {
             withType<MavenPublication> {
                 artifact(javadocJar)
                 pom {
-                    groupId = "io.github.mirzemehdi"
+                    groupId = "io.github.trainingdeveloperpro"
                     name.set("KMPRevenueCat")
                     description.set("KMPRevenueCat is an unofficial Kotlin Multiplatform library, wrapper library around RevenueCat integration with a Kotlin-first approach, offering a unified API for subscription/in-app purchases across iOS, and Android.")
                     licenses {
@@ -76,8 +76,8 @@ allprojects {
                         url.set("https://github.com/mirzemehdi/KMPRevenueCat/issues")
                     }
                     scm {
-                        connection.set("https://github.com/mirzemehdi/KMPRevenueCat.git")
-                        url.set("https://github.com/mirzemehdi/KMPRevenueCat")
+                        connection.set("https://github.com/trainingdeveloperpro/KMPRevenueCat.git")
+                        url.set("https://github.com/trainingdeveloperpro/KMPRevenueCat")
                     }
                     developers {
                         developer {
