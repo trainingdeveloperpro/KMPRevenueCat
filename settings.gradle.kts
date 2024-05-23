@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 include(":kmprevenuecat-purchases")
 include(":kmprevenuecat-purchases-ui")
 include(":sampleApp:composeApp")
+include(":sampleApp:desktopApp")
